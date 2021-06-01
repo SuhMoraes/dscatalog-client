@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.suhailah.dsclient.dto.ClientDTO;
 import com.suhailah.dsclient.entities.Client;
 import com.suhailah.dsclient.repositories.ClientRepository;
+import com.suhailah.dsclient.services.exceptions.ResourceNotFoundExceptions;
 
 @Service
 public class ClientService {
@@ -37,15 +38,29 @@ public class ClientService {
 	@Transactional
 	public ClientDTO insert(ClientDTO dto) {  //Método para atualizar um recurso
 		Client entity = new Client(); // Atualiza os dados
-		entity.setName(dto.getName());
+		entity.setName(dto.getName()); // setName = Definir o nome // getName = Obter o nome
 		entity.setCpf(dto.getCpf());
 		entity.setIncome(dto.getIncome());
 		entity.setBirthDate(dto.getBirthDate());
 		entity.setChildren(dto.getChildren());
 		entity = repository.save(entity);
-		return new ClientDTO(entity);
-		
+		return new ClientDTO(entity);		 
 	}
-
 	
+	@Transactional
+	public ClientDTO update(Long id, ClientDTO dto) {
+		try {
+			Client entity = repository.getOne(id);
+			entity.setName(dto.getName()); // setName = Definir o nome // getName = Obter o nome
+			entity.setCpf(dto.getCpf());
+			entity.setIncome(dto.getIncome());
+			entity.setBirthDate(dto.getBirthDate());
+			entity.setChildren(dto.getChildren());
+			entity = repository.save(entity);
+			return new ClientDTO(entity);		
+		} 
+	   catch(EntityNotFoundException e) {
+		 throw new ResourceNotFoundExceptions("Id Not Found " + id);
+	   }
+	}
 }
