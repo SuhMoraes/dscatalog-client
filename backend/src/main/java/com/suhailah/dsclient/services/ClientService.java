@@ -1,13 +1,13 @@
 package com.suhailah.dsclient.services;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +22,7 @@ public class ClientService {
 	@Autowired
 	private ClientRepository repository;
 	
-	@Transactional(readOnly = true)
-	public List<ClientDTO> findAll(){
-		List<Client> list = repository.findAll();
-		return list.stream().map(x -> new ClientDTO(x)).collect(Collectors.toList());
-	}
+	
 	
 	@Transactional(readOnly = true)
 	public ClientDTO findById(long id) {
@@ -36,6 +32,12 @@ public class ClientService {
 		
 	}
 	
+	@Transactional(readOnly = true)
+	public Page<ClientDTO> findAllPaged(PageRequest pageRequest){
+		Page<Client> list = repository.findAll(pageRequest);
+		return list.map(x -> new ClientDTO(x));
+		
+	}
 	@Transactional
 	public ClientDTO insert(ClientDTO dto) {  //Método para atualizar um recurso
 		Client entity = new Client(); // Atualiza os dados
@@ -74,4 +76,7 @@ public class ClientService {
 			 throw new ResourceNotFoundExceptions("Id Not Found " + id);
 		}
 	}
+
+
+	
 }
