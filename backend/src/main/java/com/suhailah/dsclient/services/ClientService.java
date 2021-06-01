@@ -33,4 +33,19 @@ public class ClientService {
 		return new ClientDTO(entity);
 		
 	}
+	
+	@Transactional
+	public ClientDTO insert(ClientDTO dto) {  //Método para atualizar um recurso
+		Client entity = new Client(); // Atualiza os dados
+		entity.setName(dto.getName());
+		entity.setCpf(dto.getCpf());
+		entity.setIncome(dto.getIncome());
+		entity.setBirthDate(dto.getBirthDate());
+		entity.setChildren(dto.getChildren());
+		entity = repository.save(entity);
+		return new ClientDTO(entity);
+		
+	}
+
+	
 }
